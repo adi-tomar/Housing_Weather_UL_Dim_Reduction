@@ -9,5 +9,6 @@ README.txt
 
 ## Data
 Weather data is located in data/weather/city_data
+Housing data is located in data/housing
 ## Contact
 For any issues, contact atomar@gatech.edu
