@@ -5,7 +5,8 @@
 \usepackage{multirow}
 \usepackage{fancyhdr}
 \usepackage{subcaption}
-\title{}
+\usepackage{booktabs}
+\title{Exploring Unsupervised Learning and Dimensionality Reduction Algorithms: Weather and Housing Price Classification}
 \author{Aditya Tomar \\ CS7641: Assignment 3 \\ atomar45@gatech.edu}
 
 \fancypagestyle{fancy}{
@@ -24,10 +25,42 @@
 \section{Introduction}
 
 
-\section{Methods}
+\section{Experiments and Results}
+\subsection{Step 4}
+  \begin{table}[h]
+  \centering
+  \caption{Performance Metrics for PCA, ICA, and RP}
+  \label{tab:performance_metrics}
+  \begin{tabular}{lcccc}
+    \toprule
+    \textbf{Method} & \textbf{Accuracy} & \textbf{Training Time (s)} & \textbf{Prediction Time (s)} & \textbf{F1-Score Avg} \\
+    \midrule
+    \textbf{PCA} & 0.9334 & 3.4113 & 0.00041 & 0.93 \\
+    \textbf{ICA} & 0.9471 & 2.6668 & 0.00051 & 0.95 \\
+    \textbf{RP}  & 0.9181 & 2.1919 & 0.00032 & 0.92 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
-\section{Results}
-  
+
+\subsection{Step 5}
+
+\begin{table}[h]
+    \centering
+        \caption{Performance comparison of PCA, ICA, and RP with clusters.}
+    \label{tab:performance_comparison}
+    \begin{tabular}{lcccc}
+        \toprule
+         \textbf{Method} & \textbf{Accuracy} & \textbf{Training Time (s)} & \textbf{Prediction Time (s)} & \textbf{F1-Score Avg} \\
+        \midrule
+        \textbf{PCA w/ Clusters} & 0.9454 & 3.6799 & 0.00038 & 0.95\\
+        \textbf{ICA w/ Clusters} & 0.9369 & 3.55548 & 0.00029 & 0.94\\
+        \textbf{RP w/ Clusters} & 0.9300 & 2.15453 & 0.00033 & 0.93\\
+        \bottomrule
+        
+    \end{tabular}
+
+\end{table}
 \section{Discussion}
 
 \section{Conclusion}
