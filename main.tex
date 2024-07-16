@@ -32,7 +32,7 @@
 \subsection{KMeans}
 In both the weather and housing datasets, I created a function that could find the most optimal number of clusters for KMeans clustering. I implemented both the Elbow Method and the Silhouette Score Method as a way to compare k values derived from different approaches. 
 \par The Elbow Method is a very straightforward approach as it is the sum of the squared distances between the datapoint and the centroid of the nearest cluster. You plot the sum of all the squared distances against different number of clusters. The elbow is just the point at which there is diminishing returns as you start adding more clusters. 
-\par The Silhouette Method is more robust as you are measuring how similar a datapoint is to it own cluster compared to the other cluster ranging from -1 to 1. This method is more robust as you are trying to see how well matched each datapoint is to its respective cursor. The higher the value the datapoints are well matched to their clusters, the lower the value it means datapoints are quite dissimilar to their own clusters we should find values for k that are smaller to that maximize the silhouette score. 
+\par The Silhouette Method is more robust as you are trying to see how well matched each datapoint is to its respective cluster. The higher the value, the datapoints are well matched to their clusters, the lower the value it means datapoints are quite dissimilar to their own clusters we should find values for k that are smaller so that we maximize the silhouette score. 
 \par Not only did the SS and Elbow Method return the same value on housing and weather data, but the value of clusters k was the same, 2. Since this was originally a binary classification problem having two clusters does make sense, it means that both datasets separate into two clusters naturally.
 \begin{figure} 
     \centering
@@ -72,17 +72,51 @@ By the end of this step, I could see through different optimization methods for 
 Dimensionality Reduction is a very important for constructing unsupervised learning models for an unlabeled dataset and gives us the ability to streamline the data into its most important components. 
 \subsection{Principal Component Analysis (PCA)}
 \par PCA is a technique where original dataset is condensed to a set of uncorrelated components, and sorted by the amount of variance they have. It aims to retain as much variance as possible in few dimensions. Variance is important in PCA because it is the structure of the original dataset, without the dimension reduction becomes pointless if you lose too much information. To optimize to minimize loss in variance, I used the Explained Variance method to choose number of components based on the when the variance exceeds a certain threshold, in this case 95\%.
-\par In both the housing and weather dataset, the cumulative variance increased with more components, adding to the total variance and then plateaued, suggesting earlier components had more importance overall, however I noticed a decreasing trend in the percentage of individual variance which suggests adding more components in fact does not add more importance if anything it leads to diminishing returns. Fig. 5 details the Explained Variance for the housing data.
+\par In both the housing and weather dataset, the cumulative variance increased with more components, adding to the total variance and then plateaued, suggesting earlier components had more importance overall, however I noticed a decreasing trend in the percentage of individual variance which suggests adding more components in fact does not add more importance if anything it leads to diminishing returns. Fig. 5 details the Explained Variance for the housing data.\\\\
 \begin{figure}
     \centering
-    \includegraphics[width=1.0\linewidth]{figures//housing_figures/step_1d.png}
-    \caption{Housing Data -- EM Components}
-    \label{fig:4_housing_EM
+    \includegraphics[width=1.0\linewidth]{figures//housing_figures/step_2a.png}
+    \caption{Housing Data -- Explained Variance (PCA)}
+    \label{fig:5_housing_ExpVariance
 }
 \end{figure}
 \subsection{Independent Component Analysis (ICA)}
+\par ICA is another alternative technique that identifies features that are independent from each other. Mainly used in signal processing to separate components from mixed signals. It tends to capture non-Gaussian structures in datasets, deviating from more symmetric, bell-shaped curves that you see in Gaussian distributions. ICA should be use when you have an array of independent sources that can be easily separated. I want to use ICA to see if we can reduce the dataset to include independent components. I used the Kurtosis method to find the optimal number of independent that both the weather and housing datasets have. 
+\par Kurtosis is a measure that gives us the shape of the distribution of the data. In relation to ICA, it helps us it identify the features that are not normal in the data. In the graphs I was looking for where the value of kurtosis was the highest , meaning that the the data has outliers which makes it deviate from a bell shape normal distribution. Anywhere the data had lower kurtosis, this would tell me that for those number of components the data would be moving towards a normal distribution. So looking at Fig. 6 and Fig. 7, we see that kurtosis was maximized when the number of components were 8 and 3 respectively for the housing and weather datasets. 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures//housing_figures/step_2b.png}
+    \caption{Housing Data -- Kurtosis (ICA)}
+    \label{fig:6_housing_kurtosis
+}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures//weather_figures/step_2c.png}
+    \caption{Weather Data -- Kurtosis (ICA)}
+    \label{fig:7_weather_kurtosis
+}
+\end{figure}
 \subsection{Random Projection (RP)} 
+\par Random Projection is the third dimensionality reduction method I used that uses a random matrix to project a higher dimensional data points onto a lower dimensional space. It is much faster than ICA and PCA in that it can project the entire dataset to a lower dimensional where as PCA involves calculating eigenvalues and eigenvectors and sorting them and ICA uses more complex mathematical operations to maximize the non-Gaussianity of the dataset. RP is straightforward operation where you multiply the matrix by some random matrix which is less intensive computationally. I used the Reconstruction error method to optimize the number of components. 
+\par The Reconstruction Error method reconstructs the data from the lower dimensional space back to the original data, using an inverse matrix. The error calculation is just the difference between the original and reconstructed data. With the weather data in Fig. 8, I was looking to see where the reconstruction error reached the minimum, however, the error was still pretty high when I used reconstruction error method on the housing data. This makes sense that it performed poorly because it works better on larger datasets that need faster approximations, however with smaller datasets, it sacrifices accuracy for time complexity.
+\par After looking at all three of these algorithms for dimensionality reduction on my datasets, I found that some algorithms perform better than others. In particular, ICA on the housing seemed to produce a decent amount of components. In the next step, I aim to take a closer look at the algorithms' clustering performance using different criterion and find the model-reduction combination that performed the best between the two datasets.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures//weather_figures/step_2d.png}
+    \caption{Weather Data -- Reconstruction Error (RP)}
+    \label{fig:8_weather_reconstruction
+}
+\end{figure}
 \section{Step 3}
+After applying the dimensionality reduction algorithms on my two datasets, there were many nuances and cases I had to consider in deciding the optimal values for the number of components for each algorithm. In this section, I want to compare and rank the different algorithm and model pairs across the two datasets to see which pair had the best performance using three scoring mechanisms.
+\subsection{Silhouette Score}
+\par As discussed in Step 1, Silhouette Method is a quite useful metric to use when trying to explore a data point's similarity with its assigned cluster and with other clusters too. The metric is also often used to identify how well-separated the clusters are. I mainly used the metric to assess how each model-algorithm pair handles the trade off between compactness and separation between the clusters.
+
+\subsection{Davies-Bouldin Score}
+\par The Davies-Bouldin Score is a metric that measures the mean similarity ratio of between two clusters. This metric is useful as it measures the inter-cluster scatter and intra-cluster separation, giving an insight into how well the model handled the clustering of the reduced data. To interpret the score, I am looking for lower values as it will indicate that the clusters are compact and are distinct, so there will clear separation.
+\subsection{Calinski-Harabasz Score}
+The Calinski-Harbasz Score or the Variance Ratio Criterion measures the relationship between the sum of intra-cluster and inter-cluster dispersion. This is also very useful in ranking our pairs because it also balances the compactness and separation of the clusters. A high score from this metric will indicate that the model had clustered the data well.
 \section{Step 4}
 \begin{table}[htp]
     \centering
