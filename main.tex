@@ -23,7 +23,7 @@
 \end{abstract}
 
 \section{Introduction} Life is made up entirely of uncertainties. It has many ups and downs, as well as crests and valleys. However, it is our nature as humans to want to make sense of the world around us and find answers to how and why specific incidents happen. With so much to be aware of, it is easy to lose track of what problem we are trying to solve. To lessen the cognitive load, data scientists and machine learning engineers report their findings and put them into datasets and design models that can take this vast information and distill it to a compressed set of variables that capture the more valuable features in a process called dimensionality reduction to help us solve real-life problems and make sense of the world. Machine learning is the application of computational techniques to predict outcomes before they happen based on what has happened before, and there are two branches of this: Supervised and Unsupervised Learning. Assignment 1 explored how we can take our observations of the past (target variable) and see if the algorithm can recognize patterns and future outcomes. This assignment explores how we can use dimensionality reduction algorithms to identify and learn patterns in unlabeled data. 
-\par This study aims to see if I can leverage dimensionality reduction and clustering methods to extract critical features in data and improve the accuracy of a supervised learning method, in this case, a Neural Network, as well as to see if applying clustering to a dataset before any dimensionality reduction helps improve a neural network's performance by showcasing essential structures in the dataset.
+\par This study aims to see if applying clustering to the datasets before they are reduced by the dimensionalilty reduction algorithms improves the neural networks performance rather than reducing it first and seeing if using the components created by PCA, ICA, and RP combined with KMeans and EM perform better than the Neural Network Learner from Assignment 1.
 \par To investigate my hypotheses, I chose two datasets. One is the AMES Housing dataset, a classification problem containing many features like square footage, garage space, number of bathrooms, etc., factors that would help determine a home's fiscal value. The second is a time series dataset that contains meteorological data from numerous European cities over a year. 
 
 \section{Step 1}
@@ -34,8 +34,54 @@ In both the weather and housing datasets, I created a function that could find t
 \par The Elbow Method is a very straightforward approach as it is the sum of the squared distances between the datapoint and the centroid of the nearest cluster. You plot the sum of all the squared distances against different number of clusters. The elbow is just the point at which there is diminishing returns as you start adding more clusters. 
 \par The Silhouette Method is more robust as you are measuring how similar a datapoint is to it own cluster compared to the other cluster ranging from -1 to 1. This method is more robust as you are trying to see how well matched each datapoint is to its respective cursor. The higher the value the datapoints are well matched to their clusters, the lower the value it means datapoints are quite dissimilar to their own clusters we should find values for k that are smaller to that maximize the silhouette score. 
 \par Not only did the SS and Elbow Method return the same value on housing and weather data, but the value of clusters k was the same, 2. Since this was originally a binary classification problem having two clusters does make sense, it means that both datasets separate into two clusters naturally.
-
+\begin{figure} 
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures//weather_figures/step_1a.png}
+    \caption{Weather Data -- KMeans Clusters}
+    \label{fig:1_weather_kmeans
+}
+\end{figure}
+\par In Fig.1, we can see there is a clear separation between the classes for the mean temperature and humidity features. 
+\begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures//housing_figures/step_1c.png}
+    \caption{Housing Data -- KMeans Clusters}
+    \label{fig:2_housing_kmeans
+}
+\end{figure}
+\par In Fig.2, we see something peculiar because the data is discrete and not continuous like the features in the weather data, we see this kind of dotted grid but can see a separation between the two.
+\subsection{Expectation Maximization (EM)}
+\par I used two methods as will to optimize the number components for the Gaussian Mixture Model I used for the EM method, the Akaike Information Criterion (AIC) and Bayes Information Criterion (BIC). From the lectures, I know that the BIC uses Bayes analysis to estimate the function of the posterior probability being true. It is better in cases where we have smaller datasets, so the models are not too complex. Akaike also penalizes parameters but it stresses the goodness of fit more, so it does not penalize the parameters too harshly. So it is better to use that optimization method for larger datasets and helps prevent overfitting because of the focus on goodness of fit. I wanted to compare how the different scoring affects the number of components for the EM method. Sure enough, it did not change much as both returned the same values n=10 and n=6.
+\begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures//weather_figures/step_1b.png}
+    \caption{Weather Data -- EM Components}
+    \label{fig:3_weather_EM
+}
+\end{figure}
+In Fig.3, we can see that the weather dataset has converged to 6 parameters. In Fig.4, the housing dataset converged to 10 parameters with clustering forming a similar grid like pattern to KMeans. 
+\begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures//housing_figures/step_1d.png}
+    \caption{Housing Data -- EM Components}
+    \label{fig:4_housing_EM
+}
+\end{figure}
+By the end of this step, I could see through different optimization methods for cluster values specialized in detecting goodness of fit and overfitting minimization, both datasets returned the same value, so it would seem that the datasets are properly scaled to move to the next step.
 \section{Step 2}
+Dimensionality Reduction is a very important for constructing unsupervised learning models for an unlabeled dataset and gives us the ability to streamline the data into its most important components. 
+\subsection{Principal Component Analysis (PCA)}
+\par PCA is a technique where original dataset is condensed to a set of uncorrelated components, and sorted by the amount of variance they have. It aims to retain as much variance as possible in few dimensions. Variance is important in PCA because it is the structure of the original dataset, without the dimension reduction becomes pointless if you lose too much information. To optimize to minimize loss in variance, I used the Explained Variance method to choose number of components based on the when the variance exceeds a certain threshold, in this case 95\%.
+\par In both the housing and weather dataset, the cumulative variance increased with more components, adding to the total variance and then plateaued, suggesting earlier components had more importance overall, however I noticed a decreasing trend in the percentage of individual variance which suggests adding more components in fact does not add more importance if anything it leads to diminishing returns. Fig. 5 details the Explained Variance for the housing data.
+\begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures//housing_figures/step_1d.png}
+    \caption{Housing Data -- EM Components}
+    \label{fig:4_housing_EM
+}
+\end{figure}
+\subsection{Independent Component Analysis (ICA)}
+\subsection{Random Projection (RP)} 
 \section{Step 3}
 \section{Step 4}
 \begin{table}[htp]
