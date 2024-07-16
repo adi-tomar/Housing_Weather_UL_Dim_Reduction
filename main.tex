@@ -22,16 +22,28 @@
 
 \end{abstract}
 
-\section{Introduction}
+\section{Introduction} Life is made up entirely of uncertainties. It has many ups and downs, as well as crests and valleys. However, it is our nature as humans to want to make sense of the world around us and find answers to how and why specific incidents happen. With so much to be aware of, it is easy to lose track of what problem we are trying to solve. To lessen the cognitive load, data scientists and machine learning engineers report their findings and put them into datasets and design models that can take this vast information and distill it to a compressed set of variables that capture the more valuable features in a process called dimensionality reduction to help us solve real-life problems and make sense of the world. Machine learning is the application of computational techniques to predict outcomes before they happen based on what has happened before, and there are two branches of this: Supervised and Unsupervised Learning. Assignment 1 explored how we can take our observations of the past (target variable) and see if the algorithm can recognize patterns and future outcomes. This assignment explores how we can use dimensionality reduction algorithms to identify and learn patterns in unlabeled data. 
+\par This study aims to see if I can leverage dimensionality reduction and clustering methods to extract critical features in data and improve the accuracy of a supervised learning method, in this case, a Neural Network, as well as to see if applying clustering to a dataset before any dimensionality reduction helps improve a neural network's performance by showcasing essential structures in the dataset.
+\par To investigate my hypotheses, I chose two datasets. One is the AMES Housing dataset, a classification problem containing many features like square footage, garage space, number of bathrooms, etc., factors that would help determine a home's fiscal value. The second is a time series dataset that contains meteorological data from numerous European cities over a year. 
 
+\section{Step 1}
+\par To determine the optimal number of clusters and components for clustering algorithms, I performed a quick EDA analysis on both the housing and weather datasets to see what were two important features of both datasets that I could use in my analysis. After standardizing the datasets using StandardScaler from the Scikit-Learn library, I created a correlation matrix including the target column to see what they top features were. I chose to use the average temperature and humidity characteristics from the weather data and the overall quality and size characteristics of the garage from the housing dataset. All these features showed a strong correlation with the target column from their respective datasets. I dropped those target columns to prepare for the implementation of KMeans and Expectation Maximization (EM) algorithms.
+\par KMeans and EM are widely used clustering algorithms to analyze very noisy datasets and perform high dimensionality analysis. For my purposes, I will try to see how these clustering algorithms perform before any dimensional reduction. KMeans is very simple in how it assigns different data points to each cluster center and does well in cases where there is more rounder clusters. EM is a much more versatile variant and can handle irregular shaped clusters and non-normal distributions. I think I will see EM a much better candidate for the housing dataset as it has more complex distributions of features than KMeans.
+\subsection{KMeans}
+In both the weather and housing datasets, I created a function that could find the most optimal number of clusters for KMeans clustering. I implemented both the Elbow Method and the Silhouette Score Method as a way to compare k values derived from different approaches. 
+\par The Elbow Method is a very straightforward approach as it is the sum of the squared distances between the datapoint and the centroid of the nearest cluster. You plot the sum of all the squared distances against different number of clusters. The elbow is just the point at which there is diminishing returns as you start adding more clusters. 
+\par The Silhouette Method is more robust as you are measuring how similar a datapoint is to it own cluster compared to the other cluster ranging from -1 to 1. This method is more robust as you are trying to see how well matched each datapoint is to its respective cursor. The higher the value the datapoints are well matched to their clusters, the lower the value it means datapoints are quite dissimilar to their own clusters we should find values for k that are smaller to that maximize the silhouette score. 
+\par Not only did the SS and Elbow Method return the same value on housing and weather data, but the value of clusters k was the same, 2. Since this was originally a binary classification problem having two clusters does make sense, it means that both datasets separate into two clusters naturally.
 
-\section{Experiments and Results}
-\subsection{Step 4}
-  \begin{table}[h]
-  \centering
-  \caption{Performance Metrics for PCA, ICA, and RP}
-  \label{tab:performance_metrics}
-  \begin{tabular}{lcccc}
+\section{Step 2}
+\section{Step 3}
+\section{Step 4}
+\begin{table}[htp]
+    \centering
+    \caption{Performance Metrics for PCA, ICA, and RP}
+    \label{tab:performance_metrics}
+    \resizebox{\columnwidth}{!}{%}
+    \begin{tabular}{lcccc}
     \toprule
     \textbf{Method} & \textbf{Accuracy} & \textbf{Training Time (s)} & \textbf{Prediction Time (s)} & \textbf{F1-Score Avg} \\
     \midrule
@@ -39,16 +51,18 @@
     \textbf{ICA} & 0.9471 & 2.6668 & 0.00051 & 0.95 \\
     \textbf{RP}  & 0.9181 & 2.1919 & 0.00032 & 0.92 \\
     \bottomrule
-  \end{tabular}
+    \end{tabular}%
+    }
 \end{table}
 
 
-\subsection{Step 5}
+\section{Step 5}
 
-\begin{table}[h]
+\begin{table}[htp]
     \centering
         \caption{Performance comparison of PCA, ICA, and RP with clusters.}
     \label{tab:performance_comparison}
+      \resizebox{\columnwidth}{!}{%}
     \begin{tabular}{lcccc}
         \toprule
          \textbf{Method} & \textbf{Accuracy} & \textbf{Training Time (s)} & \textbf{Prediction Time (s)} & \textbf{F1-Score Avg} \\
@@ -58,10 +72,10 @@
         \textbf{RP w/ Clusters} & 0.9300 & 2.15453 & 0.00033 & 0.93\\
         \bottomrule
         
-    \end{tabular}
+    \end{tabular}%
+    }
 
 \end{table}
-\section{Discussion}
 
 \section{Conclusion}
 
