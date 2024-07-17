@@ -18,10 +18,6 @@
 
 \maketitle
 
-\begin{abstract}
-
-\end{abstract}
-
 \section{Introduction} Life is made up entirely of uncertainties. It has many ups and downs, as well as crests and valleys. However, it is our nature as humans to want to make sense of the world around us and find answers to how and why specific incidents happen. With so much to be aware of, it is easy to lose track of what problem we are trying to solve. To lessen the cognitive load, data scientists and machine learning engineers report their findings and put them into datasets and design models that can take this vast information and distill it to a compressed set of variables that capture the more valuable features in a process called dimensionality reduction to help us solve real-life problems and make sense of the world. Machine learning is the application of computational techniques to predict outcomes before they happen based on what has happened before, and there are two branches of this: Supervised and Unsupervised Learning. Assignment 1 explored how we can take our observations of the past (target variable) and see if the algorithm can recognize patterns and future outcomes. This assignment explores how we can use dimensionality reduction algorithms to identify and learn patterns in unlabeled data. 
 \par This study aims to see if applying clustering to the datasets before they are reduced by the dimensionalilty reduction algorithms improves the neural networks performance rather than reducing it first and seeing if using the components created by PCA, ICA, and RP combined with KMeans and EM perform better than the Neural Network Learner from Assignment 1.
 \par To investigate my hypotheses, I chose two datasets. One is the AMES Housing dataset, a classification problem containing many features like square footage, garage space, number of bathrooms, etc., factors that would help determine a home's fiscal value. The second is a time series dataset that contains meteorological data from numerous European cities over a year. 
@@ -104,7 +100,8 @@ Dimensionality Reduction is a very important for constructing unsupervised learn
 \begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{figures//weather_figures/step_2d.png}
-    \caption{Weather Data -- Reconstruction Error (RP)}
+
+        \caption{Weather Data -- Reconstruction Error (RP)}
     \label{fig:8_weather_reconstruction
 }
 \end{figure}
@@ -119,7 +116,7 @@ The Calinski-Harbasz Score or the Variance Ratio Criterion measures the relation
 \subsection{Results}
 \begin{table}[htp]
     \centering
-    \caption{Clustering Performance Metrics for Different Reduction Techniques}
+    \caption{Housing Data Clustering Performance Metrics for Different Reduction Techniques}
     \label{tab:clustering_performance}
     \resizebox{\columnwidth}{!}{%
     \begin{tabular}{lcccc}
@@ -137,12 +134,40 @@ The Calinski-Harbasz Score or the Variance Ratio Criterion measures the relation
     }
 \end{table}
 \subsubsection{Housing}{
-Across the different reduction methods, KMeans performed a lot better at clustering the components just by looking at the silhouette score. Looking at the score for the housing dataset, the pair that performed the was KMeans\_RP.
+Across the different reduction methods, KMeans performed a lot better at clustering the components just by looking at the silhouette score. Looking at the score for the housing dataset, the pair that performed the best was KMeans\_RP.
 }
 
-\subsubsection{Weather}
-
+\begin{table}[htp]
+    \centering
+    \caption{Weather Data Clustering Performance Metrics for Different Reduction Techniques}
+    \label{tab:clustering_performance}
+    \resizebox{\columnwidth}{!}{%
+    \begin{tabular}{lcccc}
+        \hline
+        & \textbf{Silhouette Score} & \textbf{Davies-Bouldin Score} & \textbf{Calinski-Harabasz Score} \\
+        \hline
+        \textbf{KMeans\_PCA} & 0.374 & 1.041 & 2630.676 \\
+        \textbf{EM\_PCA} & 0.136 & 2.242 & 536.479 \\
+        \textbf{KMeans\_ICA} & 0.386 & 0.843 & 2095.155 \\
+        \textbf{EM\_ICA} & 0.205 & 1.495 & 972.762 \\
+        \textbf{KMeans\_RP} & 0.446 & 0.842 & 4274.615 \\
+        \textbf{EM\_RP} & 0.116 & 2.327 & 486.933 \\
+        \hline
+    \end{tabular}%
+    }
+\end{table}
+\subsubsection{Weather}{
+Across the different reduction methods, KMeans also performed the best through all metrics. Looking at the weather performance metrics chart the pair that performed best was also KMeans\_RP.
+}
+\par I think that assessing the performance of the different algorithms using the 3 metrics I mentioned: Silhouette, Davies-Bouldin, and Calinski-Harabasz scores is a much better way of analyzing how the cluster behave when performing clustering on the reduced datasets as opposed to just showing the accuracy of the model. I was able to understand how the algorithm were able to handle the trade off between the compactness and separation between the clusters by research different methods of scoring distances between the clusters.
 \section{Step 4}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures//housing_figures/baseline_learning_curve_nn.png}
+    \caption{Baseline Neural Network}
+    \label{fig:baseline}
+\end{figure}
+Fig. 9 is the baseline learning curve for NN I created in Assignment 1. We can see the accuracy peaks right under 92 percent.
 \begin{table}[htp]
     \centering
     \caption{Performance Metrics for PCA, ICA, and RP}
@@ -160,14 +185,28 @@ Across the different reduction methods, KMeans performed a lot better at cluster
     }
 \end{table}
 \begin{figure}
+        \centering
+        \includegraphics[width=1\linewidth]{figures//housing_figures/ROC_curve_dim_reduction.png}
+        \caption{ROC Curve - Neural Network on Reduced Data}
+        \label{fig:enter-label}
+    \end{figure}
+\par Looking at the accuracy first, ICA achieved highest accuracy, followed by PCA and RP. ICA was able to properly capture the data structure for this particular classification task. Next, Looking at the training time, Random Projection has the fastest training time followed by ICA and PCA. It appears that RP was more computationally efficient in creating a projection of the data to a low dimensionality, but had the lowest accuracy. The prediction time across the board was quite fast but with RP still beating out ICA and PCA. 
+\par The ROC curve indicates that ICA had the best performance having the most area under the curve at 0.99. This tells me that there was stellar true positive rate with not many false positives. PCA and RP also performed strong having AUC of 0.98 and 0.97. 
+\par Clearly, ICA stands out as the best dimensionality reduction technique for a Neural Network, it lead the pack in accuracy, F1- score and area under the curve.
+\par PCA performed reasonably too, but it seems to be the one algorithm that performs well in speed and accuracy.
+\par RP is fastest in training and prediction, performing well and above the baseline in accuracy and F1-score.
+\begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{figures//housing_figures/baseline_roc_curve_nn_BUDAPEST.png}
-    \caption{Baseline Neural Network}
+    \includegraphics[width=1\linewidth]{figures//housing_figures/f1_dim_reduction.png}
+    \caption{F1-Score - Neural Network on Reduced Data}
     \label{fig:enter-label}
 \end{figure}
-
 \section{Step 5}
-
+\par PCA with Clusters achieved highest accuracy, followed by ICA and RP. PCA was able to properly choose the principal components of the dataset that were meaningful. Next, Looking at the training time, Random Projection has the fastest training time followed by ICA and PCA, similar to Step 4. It appears that RP was still more computationally efficient in creating a projection of the data to a low dimensionality, but had the lowest accuracy. The prediction time across the board was extremely fast however ICA had a much faster time than RP which is interesting. 
+\par The ROC curve indicates that PCA had the best performance having the most area under the curve at 0.99. This tells me that there was stellar true positive rate with not many false positives. ICA and RP also performed strong having AUC of 0.98 and 0.97. 
+\par Clearly, PCA with clusters stands out as the best dimensionality reduction technique for a Neural Network, it lead the pack in accuracy, F1- score and area under the curve.
+\par ICA performed reasonably too, but it seems to be the one algorithm that performs well in speed and accuracy.
+\par RP is fastest in training, performing well and above the baseline in accuracy and F1-score.
 \begin{table}[htp]
     \centering
         \caption{Performance comparison of PCA, ICA, and RP with clusters.}
@@ -186,9 +225,21 @@ Across the different reduction methods, KMeans performed a lot better at cluster
     }
 
 \end{table}
-
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures//housing_figures/ROC_curve_dim_red_clusters.png}
+    \caption{ROC Curve - Neural Network on Reduced Data w/ Clusters}
+    \label{fig:Roc-Curve}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures//housing_figures/f1_score_dim_red_ cluster.png}
+    \caption{F1-Score - Neural Network on Reduced Data w/ Clusters}
+    \label{fig:enter-label}
+\end{figure}\\\\\\\\\\\\\\\\\
 \section{Conclusion}
-
+In this study, I extensively looked at the performance of multiple dimensionality reduction algorithms: Principal Component Analysis (PCA), Independent Component Analysis (ICA), and Random Projection (RP). These algorithms were used on two different datasets, the ECA\&D and Ames housing dataset. My analysis mainly focused on understanding and finding out the limitations of each reduction algorithm through using different metrics such as F1-score, accuracy, ROC-AUC, precision, recall, and time complexity.
+\par In my findings, I found that applying clustering algorithms like K-Means and Expected Maximization (EM) first before the dimensionality reduction method improved the Neural Network's performance considerably. I also saw that even using the components created by the dimensionality reduction algorithms performed much better than the baseline NN model. 
 
 \bibliographystyle{IEEEtran}
 \begin{thebibliography}{1}
