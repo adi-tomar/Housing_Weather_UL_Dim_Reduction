@@ -112,11 +112,36 @@ Dimensionality Reduction is a very important for constructing unsupervised learn
 After applying the dimensionality reduction algorithms on my two datasets, there were many nuances and cases I had to consider in deciding the optimal values for the number of components for each algorithm. In this section, I want to compare and rank the different algorithm and model pairs across the two datasets to see which pair had the best performance using three scoring mechanisms.
 \subsection{Silhouette Score}
 \par As discussed in Step 1, Silhouette Method is a quite useful metric to use when trying to explore a data point's similarity with its assigned cluster and with other clusters too. The metric is also often used to identify how well-separated the clusters are. I mainly used the metric to assess how each model-algorithm pair handles the trade off between compactness and separation between the clusters.
-
 \subsection{Davies-Bouldin Score}
 \par The Davies-Bouldin Score is a metric that measures the mean similarity ratio of between two clusters. This metric is useful as it measures the inter-cluster scatter and intra-cluster separation, giving an insight into how well the model handled the clustering of the reduced data. To interpret the score, I am looking for lower values as it will indicate that the clusters are compact and are distinct, so there will clear separation.
 \subsection{Calinski-Harabasz Score}
 The Calinski-Harbasz Score or the Variance Ratio Criterion measures the relationship between the sum of intra-cluster and inter-cluster dispersion. This is also very useful in ranking our pairs because it also balances the compactness and separation of the clusters. A high score from this metric will indicate that the model had clustered the data well.
+\subsection{Results}
+\begin{table}[htp]
+    \centering
+    \caption{Clustering Performance Metrics for Different Reduction Techniques}
+    \label{tab:clustering_performance}
+    \resizebox{\columnwidth}{!}{%
+    \begin{tabular}{lcccc}
+        \hline
+        & \textbf{Silhouette Score} & \textbf{Davies-Bouldin Score} & \textbf{Calinski-Harabasz Score} \\
+        \hline
+        \textbf{KMeans\_PCA} & 0.238 & 1.591 & 994.455 \\
+        \textbf{EM\_PCA} & 0.209 & 1.789 & 749.088 \\
+        \textbf{KMeans\_ICA} & 0.175 & 1.451 & 324.967 \\
+        \textbf{EM\_ICA} & 0.048 & 2.361 & 196.836 \\
+        \textbf{KMeans\_RP} & 0.272 & 1.404 & 1230.041 \\
+        \textbf{EM\_RP} & 0.174 & 2.018 & 589.094 \\
+        \hline
+    \end{tabular}%
+    }
+\end{table}
+\subsubsection{Housing}{
+Across the different reduction methods, KMeans performed a lot better at clustering the components just by looking at the silhouette score. Looking at the score for the housing dataset, the pair that performed the was KMeans\_RP.
+}
+
+\subsubsection{Weather}
+
 \section{Step 4}
 \begin{table}[htp]
     \centering
@@ -134,7 +159,12 @@ The Calinski-Harbasz Score or the Variance Ratio Criterion measures the relation
     \end{tabular}%
     }
 \end{table}
-
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures//housing_figures/baseline_roc_curve_nn_BUDAPEST.png}
+    \caption{Baseline Neural Network}
+    \label{fig:enter-label}
+\end{figure}
 
 \section{Step 5}
 
